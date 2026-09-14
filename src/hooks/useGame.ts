@@ -24,10 +24,12 @@ export function useGame() {
     if (index === currentQuestion.correctAnswer) { setScore((value) => value + PRIZES[currentIndex]); setCorrectCount((value) => value + 1); }
     setScreen("feedback");
   }, [currentIndex, currentQuestion, eliminated, screen]);
+  const revealAnswer = useCallback(() => setScreen("reveal"), []);
   const next = useCallback(() => {
     if (currentIndex === game.length - 1) { setScreen("final"); return; }
     setCurrentIndex((value) => value + 1); setSelectedAnswer(null); setEliminated([]); setScreen("question");
   }, [currentIndex, game.length]);
+  const openLead = useCallback(() => setScreen("lead"), []);
   const useHelp = useCallback((kind: HelpKind) => {
     if (helps[kind] || screen !== "question") return;
     setHelps((value) => ({ ...value, [kind]: true }));
@@ -37,5 +39,5 @@ export function useGame() {
     }
   }, [currentQuestion, helps, screen]);
   const hint = useMemo(() => helps.field ? currentQuestion.hintField : helps.regenesis ? currentQuestion.hintRegenesis : null, [currentQuestion, helps]);
-  return { screen, game, currentQuestion, currentIndex, score, correctCount, selectedAnswer, helps, eliminated, hint, start, answer, next, useHelp };
+  return { screen, game, currentQuestion, currentIndex, score, correctCount, selectedAnswer, helps, eliminated, hint, start, answer, revealAnswer, next, openLead, useHelp };
 }

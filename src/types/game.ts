@@ -1,6 +1,6 @@
 import type { Category, Difficulty, Question } from "../data/questions";
 
-export type Screen = "start" | "question" | "feedback" | "final";
+export type Screen = "start" | "question" | "feedback" | "reveal" | "final" | "lead";
 export type HelpKind = "technical" | "field" | "regenesis";
 
 export interface GameQuestion extends Omit<Question, "answers" | "correctAnswer"> {

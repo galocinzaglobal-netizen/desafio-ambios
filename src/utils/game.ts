@@ -4,8 +4,7 @@ import type { GameQuestion } from "../types/game";
 export const PRIZES = [100, 200, 500, 1000, 2500, 5000, 10000, 25000, 50000, 100000];
 export const letters = ["A", "B", "C", "D"];
 
-export const money = (value: number) =>
-  new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }).format(value);
+export const formatScore = (value: number) => new Intl.NumberFormat("pt-BR").format(value);
 
 export function shuffle<T>(items: T[]): T[] {
   const result = [...items];
