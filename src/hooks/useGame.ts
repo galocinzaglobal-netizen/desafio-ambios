@@ -27,7 +27,7 @@ export function useGame() {
       setScreen("feedback");
       return;
     }
-    setScreen("lead");
+    setScreen("loss");
   }, [currentIndex, currentQuestion, eliminated, screen]);
   const revealAnswer = useCallback(() => setScreen("reveal"), []);
   const next = useCallback(() => {
