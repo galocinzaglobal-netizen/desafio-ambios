@@ -21,8 +21,13 @@ export function useGame() {
   const answer = useCallback((index: number) => {
     if (screen !== "question" || eliminated.includes(index)) return;
     setSelectedAnswer(index);
-    if (index === currentQuestion.correctAnswer) { setScore((value) => value + PRIZES[currentIndex]); setCorrectCount((value) => value + 1); }
-    setScreen("feedback");
+    if (index === currentQuestion.correctAnswer) {
+      setScore((value) => value + PRIZES[currentIndex]);
+      setCorrectCount((value) => value + 1);
+      setScreen("feedback");
+      return;
+    }
+    setScreen("lead");
   }, [currentIndex, currentQuestion, eliminated, screen]);
   const revealAnswer = useCallback(() => setScreen("reveal"), []);
   const next = useCallback(() => {
