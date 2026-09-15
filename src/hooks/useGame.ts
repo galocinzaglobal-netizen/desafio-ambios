@@ -18,10 +18,11 @@ export function useGame() {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [helps, setHelps] = useState<Helps>(freshHelps);
   const [eliminated, setEliminated] = useState<number[]>([]);
+  const [activeHint, setActiveHint] = useState<HelpKind | null>(null);
 
   const currentQuestion = game[currentIndex];
   const start = useCallback(() => {
-    setGame(createGame(game.map((question) => question.id))); setCurrentIndex(0); setScore(0); setCorrectCount(0); setStreak(0); setCurrentValue(100); setMaxStreak(0); setMaxMultiplier(0); setAnswers([]); setSelectedAnswer(null); setHelps(freshHelps()); setEliminated([]); setScreen("question");
+    setGame(createGame(game.map((question) => question.id))); setCurrentIndex(0); setScore(0); setCorrectCount(0); setStreak(0); setCurrentValue(100); setMaxStreak(0); setMaxMultiplier(0); setAnswers([]); setSelectedAnswer(null); setHelps(freshHelps()); setEliminated([]); setActiveHint(null); setScreen("question");
   }, [game]);
   const answer = useCallback((index: number) => {
     if (screen !== "question" || eliminated.includes(index)) return;
@@ -35,7 +36,7 @@ export function useGame() {
       setStreak(nextStreak); setCurrentValue(pointsEarned); setMaxStreak((value) => Math.max(value, nextStreak)); setMaxMultiplier((value) => Math.max(value, nextStreak));
     } else { setStreak(0); setCurrentValue(100); }
     if (currentIndex === game.length - 1) { setScreen("final"); return; }
-    setCurrentIndex((value) => value + 1); setSelectedAnswer(null); setEliminated([]);
+    setCurrentIndex((value) => value + 1); setSelectedAnswer(null); setEliminated([]); setActiveHint(null);
   }, [currentIndex, currentQuestion, currentValue, eliminated, game.length, screen, streak]);
   const next = useCallback(() => {
     if (currentIndex === game.length - 1) { setScreen("final"); return; }
@@ -45,11 +46,12 @@ export function useGame() {
   const useHelp = useCallback((kind: HelpKind) => {
     if (helps[kind] || screen !== "question") return;
     setHelps((value) => ({ ...value, [kind]: true }));
+    if (kind !== "technical") setActiveHint(kind);
     if (kind === "technical") {
       const incorrect = currentQuestion.answers.map((_, index) => index).filter((index) => index !== currentQuestion.correctAnswer);
       setEliminated(incorrect.sort(() => Math.random() - 0.5).slice(0, 2));
     }
   }, [currentQuestion, helps, screen]);
-  const hint = useMemo(() => helps.field ? currentQuestion.hintField : helps.regenesis ? currentQuestion.hintRegenesis : null, [currentQuestion, helps]);
+  const hint = useMemo(() => activeHint === "field" ? currentQuestion.hintField : activeHint === "regenesis" ? currentQuestion.hintRegenesis : null, [activeHint, currentQuestion]);
   return { screen, game, currentQuestion, currentIndex, score, correctCount, streak, maxStreak, maxMultiplier, answers, selectedAnswer, helps, eliminated, hint, start, answer, next, openLead, useHelp };
 }

@@ -7,7 +7,9 @@ const helpItems: { kind: HelpKind; icon: string; name: string; description: stri
   { kind: "regenesis", icon: "✦", name: "REGENESIS", description: "visão sistêmica" },
 ];
 export function HelpBar({ helps, onUse, locked }: { helps: Helps; onUse: (kind: HelpKind) => void; locked: boolean }) {
-  return <div className="help-bar">{helpItems.map((help) => <motion.button key={help.kind} className={`help-button ${helps[help.kind] ? "used" : ""}`} disabled={helps[help.kind] || locked} onClick={() => onUse(help.kind)} whileHover={!helps[help.kind] ? { y: -2 } : {}} whileTap={{ scale: .96 }}>
-    <b>{help.icon}</b><span>{help.name}<small>{helps[help.kind] ? "UTILIZADA" : help.description}</small></span>
+  const available = helpItems.filter((help) => !helps[help.kind]);
+  if (!available.length) return null;
+  return <div className="help-bar">{available.map((help) => <motion.button key={help.kind} className="help-button" disabled={locked} onClick={() => onUse(help.kind)} whileHover={{ y: -2 }} whileTap={{ scale: .96 }}>
+    <b>{help.icon}</b><span>{help.name}<small>{help.description}</small></span>
   </motion.button>)}</div>;
 }
