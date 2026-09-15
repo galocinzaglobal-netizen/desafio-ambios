@@ -1,0 +1,7 @@
+import { motion } from "framer-motion";
+const stages = ["SEMENTE", "GERMINAÇÃO", "EMERGÊNCIA", "PLANTA JOVEM", "VEGETATIVO", "BOTÕES FLORAIS", "FLORAÇÃO", "FORMAÇÃO DE MAÇÃS", "DESENVOLVIMENTO DAS MAÇÃS", "ABERTURA DAS MAÇÃS", "ALGODÃO PRONTO"];
+export function plantStageLabel(stage: number) { return stages[Math.max(0, Math.min(stage, stages.length - 1))]; }
+export function CottonPlant({ stage, compact = false }: { stage: number; compact?: boolean }) {
+  const leaves = stage >= 3 ? Math.min(4, Math.floor((stage - 1) / 2)) : 0; const blooms = stage >= 6 ? Math.min(3, stage - 5) : 0; const bolls = stage >= 8 ? Math.min(3, stage - 7) : 0;
+  return <motion.div className={`cotton-plant ${compact ? "compact" : ""}`} initial={{ opacity: 0, scale: .92 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: .35 }} aria-label={`Estágio da planta: ${plantStageLabel(stage)}`}><span className="soil" />{stage === 0 ? <span className="seed" /> : <span className="stem" style={{ height: `${Math.max(22, stage * 8)}%` }} />}{Array.from({ length: leaves }).map((_, index) => <span key={`leaf-${index}`} className={`plant-leaf leaf-${index}`} />)}{Array.from({ length: blooms }).map((_, index) => <span key={`bloom-${index}`} className={`plant-bloom bloom-${index}`} />)}{Array.from({ length: bolls }).map((_, index) => <span key={`boll-${index}`} className={`plant-boll boll-${index}`} />)}</motion.div>;
+}

@@ -1,6 +1,6 @@
 import type { Category, Difficulty, Question } from "../data/questions";
 
-export type Screen = "start" | "question" | "feedback" | "reveal" | "final" | "loss" | "lead";
+export type Screen = "start" | "question" | "feedback" | "final" | "loss" | "lead";
 export type HelpKind = "technical" | "field" | "regenesis";
 
 export interface GameQuestion extends Omit<Question, "answers" | "correctAnswer"> {
@@ -15,4 +15,10 @@ export interface Helps {
   technical: boolean;
   field: boolean;
   regenesis: boolean;
+}
+
+export interface AnswerRecord {
+  questionId: number;
+  selectedAnswer: number;
+  isCorrect: boolean;
 }

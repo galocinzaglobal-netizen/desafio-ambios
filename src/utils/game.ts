@@ -40,11 +40,12 @@ function prepareQuestion(question: Question): GameQuestion {
   };
 }
 
-export function createGame(): GameQuestion[] {
+export function createGame(excludedIds: number[] = []): GameQuestion[] {
   const plan: Array<[Difficulty, number]> = [["easy", 3], ["medium", 4], ["hard", 3]];
   const usage = new Map<string, number>();
+  const excluded = new Set(excludedIds);
   const picked = plan.flatMap(([difficulty, count]) =>
-    selectBalanced(questions.filter((question) => question.difficulty === difficulty), count, usage),
+    selectBalanced((() => { const fresh = questions.filter((question) => question.difficulty === difficulty && !excluded.has(question.id)); return fresh.length >= count ? fresh : questions.filter((question) => question.difficulty === difficulty); })(), count, usage),
   );
   return shuffle(picked).map(prepareQuestion);
 }

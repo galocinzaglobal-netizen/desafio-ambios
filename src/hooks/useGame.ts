@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
-import type { HelpKind, Helps, Screen } from "../types/game";
-import { createGame, PRIZES } from "../utils/game";
+import type { AnswerRecord, HelpKind, Helps, Screen } from "../types/game";
+import { createGame } from "../utils/game";
 
 const freshHelps = (): Helps => ({ technical: false, field: false, regenesis: false });
 
@@ -10,26 +10,32 @@ export function useGame() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
+  const [streak, setStreak] = useState(0);
+  const [currentValue, setCurrentValue] = useState(100);
+  const [maxStreak, setMaxStreak] = useState(0);
+  const [maxMultiplier, setMaxMultiplier] = useState(0);
+  const [answers, setAnswers] = useState<AnswerRecord[]>([]);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [helps, setHelps] = useState<Helps>(freshHelps);
   const [eliminated, setEliminated] = useState<number[]>([]);
 
   const currentQuestion = game[currentIndex];
   const start = useCallback(() => {
-    setGame(createGame()); setCurrentIndex(0); setScore(0); setCorrectCount(0); setSelectedAnswer(null); setHelps(freshHelps()); setEliminated([]); setScreen("question");
-  }, []);
+    setGame(createGame(game.map((question) => question.id))); setCurrentIndex(0); setScore(0); setCorrectCount(0); setStreak(0); setCurrentValue(100); setMaxStreak(0); setMaxMultiplier(0); setAnswers([]); setSelectedAnswer(null); setHelps(freshHelps()); setEliminated([]); setScreen("question");
+  }, [game]);
   const answer = useCallback((index: number) => {
     if (screen !== "question" || eliminated.includes(index)) return;
     setSelectedAnswer(index);
-    if (index === currentQuestion.correctAnswer) {
-      setScore((value) => value + PRIZES[currentIndex]);
+    const isCorrect = index === currentQuestion.correctAnswer;
+    setAnswers((value) => [...value, { questionId: currentQuestion.id, selectedAnswer: index, isCorrect }]);
+    if (isCorrect) {
+      const nextStreak = streak + 1; const pointsEarned = nextStreak === 1 ? 100 : currentValue * nextStreak;
+      setScore((value) => value + pointsEarned);
       setCorrectCount((value) => value + 1);
-      setScreen("feedback");
-      return;
-    }
-    setScreen("loss");
-  }, [currentIndex, currentQuestion, eliminated, screen]);
-  const revealAnswer = useCallback(() => setScreen("reveal"), []);
+      setStreak(nextStreak); setCurrentValue(pointsEarned); setMaxStreak((value) => Math.max(value, nextStreak)); setMaxMultiplier((value) => Math.max(value, nextStreak));
+    } else { setStreak(0); setCurrentValue(100); }
+    setScreen("feedback");
+  }, [currentQuestion, currentValue, eliminated, screen, streak]);
   const next = useCallback(() => {
     if (currentIndex === game.length - 1) { setScreen("final"); return; }
     setCurrentIndex((value) => value + 1); setSelectedAnswer(null); setEliminated([]); setScreen("question");
@@ -44,5 +50,5 @@ export function useGame() {
     }
   }, [currentQuestion, helps, screen]);
   const hint = useMemo(() => helps.field ? currentQuestion.hintField : helps.regenesis ? currentQuestion.hintRegenesis : null, [currentQuestion, helps]);
-  return { screen, game, currentQuestion, currentIndex, score, correctCount, selectedAnswer, helps, eliminated, hint, start, answer, revealAnswer, next, openLead, useHelp };
+  return { screen, game, currentQuestion, currentIndex, score, correctCount, streak, maxStreak, maxMultiplier, answers, selectedAnswer, helps, eliminated, hint, start, answer, next, openLead, useHelp };
 }
