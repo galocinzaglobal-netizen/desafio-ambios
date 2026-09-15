@@ -34,8 +34,9 @@ export function useGame() {
       setCorrectCount((value) => value + 1);
       setStreak(nextStreak); setCurrentValue(pointsEarned); setMaxStreak((value) => Math.max(value, nextStreak)); setMaxMultiplier((value) => Math.max(value, nextStreak));
     } else { setStreak(0); setCurrentValue(100); }
-    setScreen("feedback");
-  }, [currentQuestion, currentValue, eliminated, screen, streak]);
+    if (currentIndex === game.length - 1) { setScreen("final"); return; }
+    setCurrentIndex((value) => value + 1); setSelectedAnswer(null); setEliminated([]);
+  }, [currentIndex, currentQuestion, currentValue, eliminated, game.length, screen, streak]);
   const next = useCallback(() => {
     if (currentIndex === game.length - 1) { setScreen("final"); return; }
     setCurrentIndex((value) => value + 1); setSelectedAnswer(null); setEliminated([]); setScreen("question");

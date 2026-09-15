@@ -10,7 +10,7 @@ export default function App() {
   const game = useGame();
   return <div className="app-shell"><div className="game-frame"><Background /><AnimatePresence mode="wait">
     {game.screen === "start" && <StartScreen key="start" onStart={game.start} />}
-    {(game.screen === "question" || game.screen === "feedback") && <QuestionScreen key="game" question={game.currentQuestion} index={game.currentIndex} selected={game.selectedAnswer} eliminated={game.eliminated} helps={game.helps} hint={game.hint} feedback={game.screen === "feedback"} onAnswer={game.answer} onHelp={game.useHelp} onNext={game.next} />}
+    {game.screen === "question" && <QuestionScreen key="game" question={game.currentQuestion} index={game.currentIndex} selected={game.selectedAnswer} eliminated={game.eliminated} helps={game.helps} hint={game.hint} onAnswer={game.answer} onHelp={game.useHelp} />}
     {game.screen === "final" && <FinalScreen key="final" score={game.score} correctCount={game.correctCount} maxStreak={game.maxStreak} maxMultiplier={game.maxMultiplier} game={game.game} answers={game.answers} onRestart={game.start} onCapture={game.openLead} />}
     {game.screen === "lead" && <LeadScreen key="lead" onRestart={game.start} />}
   </AnimatePresence></div></div>;
