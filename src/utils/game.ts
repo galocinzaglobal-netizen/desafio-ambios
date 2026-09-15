@@ -1,7 +1,6 @@
-import { questions, type Difficulty, type Question } from "../data/questions";
+import { questions, type Category, type Difficulty, type Question } from "../data/questions";
 import type { GameQuestion } from "../types/game";
 
-export const PRIZES = [100, 200, 500, 1000, 2500, 5000, 10000, 25000, 50000, 100000];
 export const letters = ["A", "B", "C", "D"];
 
 export const formatScore = (value: number) => new Intl.NumberFormat("pt-BR").format(value);
@@ -41,12 +40,11 @@ function prepareQuestion(question: Question): GameQuestion {
 }
 
 export function createGame(excludedIds: number[] = []): GameQuestion[] {
-  const plan: Array<[Difficulty, number]> = [["easy", 3], ["medium", 4], ["hard", 3]];
-  const usage = new Map<string, number>();
-  const excluded = new Set(excludedIds);
-  const picked = plan.flatMap(([difficulty, count]) =>
-    selectBalanced((() => { const fresh = questions.filter((question) => question.difficulty === difficulty && !excluded.has(question.id)); return fresh.length >= count ? fresh : questions.filter((question) => question.difficulty === difficulty); })(), count, usage),
-  );
+  const categoryPlan: Array<[Category, number]> = [["REGENESIS", 1], ["MARIN_DEEP", 1], ["INGROW", 1], ["MARIN_PRIME", 1], ["AMBIOS", 2], ["ALGODAO", 4]];
+  const difficultyPlan: Record<Difficulty, number> = { easy: 2, medium: 4, hard: 3, specialist: 1 };
+  const excluded = new Set(excludedIds); const slots = categoryPlan.flatMap(([category, count]) => Array.from({ length: count }, () => category)); const source = questions.filter((question) => !excluded.has(question.id)); const picked: Question[] = []; const remaining = { ...difficultyPlan };
+  const select = (slot: number): boolean => { if (slot === slots.length) return true; const choices = shuffle(source.filter((question) => question.category === slots[slot] && !picked.includes(question) && remaining[question.difficulty] > 0)); for (const question of choices) { picked.push(question); remaining[question.difficulty] -= 1; if (select(slot + 1)) return true; remaining[question.difficulty] += 1; picked.pop(); } return false; };
+  if (!select(0)) throw new Error("Não foi possível montar uma partida com a distribuição solicitada.");
   return shuffle(picked).map(prepareQuestion);
 }
 
