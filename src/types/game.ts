@@ -1,6 +1,6 @@
 import type { Category, Difficulty, Question } from "../data/questions";
 
-export type Screen = "start" | "question" | "feedback" | "final" | "loss" | "lead";
+export type Screen = "start" | "question" | "feedback" | "final" | "loss" | "lead" | "ranking";
 export type HelpKind = "technical" | "field" | "regenesis";
 
 export interface GameQuestion extends Omit<Question, "answers" | "correctAnswer"> {
@@ -22,3 +22,5 @@ export interface AnswerRecord {
   selectedAnswer: number;
   isCorrect: boolean;
 }
+
+export interface RankingEntry { id: string; name: string; score: number; elapsedSeconds: number; helpsUsed: number; }

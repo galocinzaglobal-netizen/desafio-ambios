@@ -3,13 +3,14 @@ import type { GameQuestion } from "../types/game";
 import { letters } from "../utils/game";
 import { AmbiosMark } from "./AmbiosMark";
 import { CottonPlant, plantStageLabel } from "./CottonPlant";
+import regenesisWordmark from "../assets/regenesis-wordmark-new.svg";
 import { HelpBar } from "./HelpBar";
 import type { HelpKind, Helps } from "../types/game";
 
 interface Props { question: GameQuestion; index: number; selected: number | null; eliminated: number[]; helps: Helps; hint: string | null; onAnswer: (index: number) => void; onHelp: (kind: HelpKind) => void; }
 export function QuestionScreen({ question, index, selected, eliminated, helps, hint, onAnswer, onHelp }: Props) {
   return <main className="question-screen">
-    <header className="game-header"><AmbiosMark compact /><div className="score-readout cultivation-readout"><span>CULTIVO</span><strong>EM CURSO</strong></div></header>
+    <header className="game-header"><div className="question-brands"><AmbiosMark compact /><img src={regenesisWordmark} alt="Regenesis" /></div><div className="score-readout cultivation-readout"><span>CULTIVO</span><strong>EM CURSO</strong></div></header>
     <section className="progress-block"><div className="question-meta"><span>PERGUNTA {String(index + 1).padStart(2, "0")} / 10</span><span>{question.difficulty === "easy" ? "NÍVEL SEMENTE" : question.difficulty === "medium" ? "NÍVEL CULTIVO" : "NÍVEL COLHEITA"}</span></div><div className="progress-line">{Array.from({ length: 10 }).map((_, step) => <i key={step} className={step <= index ? "active" : ""} />)}</div></section>
     <AnimatePresence mode="wait"><motion.section className="question-card" key={question.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: .28 }}>
       <div className="question-card-top"><div className="category-tag">{question.category.replace("_", " ")}</div><div className="growth-readout"><CottonPlant stage={index + 1} compact /><span>{plantStageLabel(index + 1)}</span></div></div><h2>{question.question}</h2>
