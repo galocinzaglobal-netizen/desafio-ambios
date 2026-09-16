@@ -20,3 +20,44 @@
 .final-score{padding:20px 12px!important;background:radial-gradient(ellipse at center,#c8f34a20,transparent 68%)}.animated-score{display:block;font-size:clamp(43px,12vw,62px)!important;line-height:1;color:#c8f34a;text-shadow:0 0 24px #c8f34a46;letter-spacing:-.08em}.animated-score small{font-size:.46em;letter-spacing:-.04em}.final-plant{min-height:135px;padding:10px 4px!important;background:linear-gradient(90deg,transparent,#c8f34a0a,transparent)}.final-plant .cotton-plant{width:154px!important;height:125px!important;flex-basis:154px!important}.final-plant strong{font-size:16px!important}.final-plant small{font-size:9px!important}
 @media(max-height:680px){.game-frame{min-height:100dvh;border-radius:0}.app-shell{padding:0}.start-screen,.question-screen{padding:20px}.hero-copy{padding-bottom:14px}.hero-copy h1{font-size:48px}.challenge-stats div{padding:11px 5px}.question-card{padding:15px}.question-card h2{font-size:18px}.answers{gap:6px}.answer{min-height:43px}.help-bar{padding-top:8px}.feedback-panel{padding:14px 20px 18px}.final-screen{padding:22px}.completion-ring{width:105px;height:105px;margin:18px 0}.final-score{margin:16px 0 12px}}
 @media(max-width:500px){.app-shell{padding:0}.game-frame{height:100dvh;min-height:100dvh;border-radius:0;width:100%}}
+
+/* Roleta 01–08: oito setores simétricos, cada um com exatamente 45°. */
+.premium-wheel .wheel{
+  background:
+    repeating-conic-gradient(from 0deg, #efffd744 0 .75deg, transparent .75deg 45deg),
+    conic-gradient(from 0deg,
+      #315f4c 0deg 45deg,
+      #2d5e66 45deg 90deg,
+      #235b70 90deg 135deg,
+      #24556f 135deg 180deg,
+      #1c5e68 180deg 225deg,
+      #25704f 225deg 270deg,
+      #406a3c 270deg 315deg,
+      #5d5334 315deg 360deg);
+}
+.premium-wheel .segment{
+  /* Centro numérico a ~66% do raio: 12% do topo + metade da altura do número. */
+  padding-top:12% !important;
+  font-size:clamp(23px,6.5vw,31px) !important;
+}
+.premium-wheel .segment span,
+.premium-wheel .segment-7 span{
+  color:#f4f8ed !important;
+  background:transparent !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  font-variant-numeric:tabular-nums;
+  letter-spacing:-.07em;
+  text-shadow:0 3px 7px #001014;
+}
+.reveal-screen.special{
+  background:
+    radial-gradient(circle at 50% 44%, #45e9f660 0 3%, #7448ff55 20%, transparent 52%),
+    linear-gradient(145deg,#071b2c,#221049 56%,#082a35);
+  animation:regenesis-pulse 1.1s ease-in-out infinite alternate;
+}
+.reveal-screen.special h1 em{color:#73f4ff;text-shadow:0 0 20px #67eaff99}
+.reveal-screen.special small{color:#b6a4ff}
+@keyframes regenesis-pulse{from{box-shadow:inset 0 0 80px #7542ff18}to{box-shadow:inset 0 0 110px #4eeeff55}}
+@media(max-height:700px){.premium-wheel .segment{padding-top:12%!important;font-size:clamp(21px,6.1vw,28px)!important}}
