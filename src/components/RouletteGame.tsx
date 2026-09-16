@@ -1,4 +1,4 @@
-import type { FormEvent, ReactNode } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
 import regenesis from "../assets/regenesis-wordmark-new.svg";
 import marinDeep from "../assets/marin-deep.png";
 import ingrow from "../assets/ingrow.png";
@@ -7,16 +7,9 @@ import { useRouletteGame, type Participant } from "../hooks/useRouletteGame";
 
 const levelName = (level: number) => level === 8 ? "DESAFIO REGENESIS" : level < 3 ? "MUITO FÁCIL" : level < 5 ? "FÁCIL" : level < 7 ? "MÉDIO" : "DIFÍCIL";
 const footer = <p className="regenesis-footer">SOLO • RAÍZES • DESENVOLVIMENTO • LAVOURA</p>;
-
-function GameHeader({ stage }: { stage: string }) {
-  return <header className="regenesis-header"><span>AMBIOS / {stage}</span><button type="button" aria-label="Som desligado">SOM OFF&nbsp;⌁</button></header>;
-}
-function BrandSignature({ compact = false }: { compact?: boolean }) {
-  return <div className={`brand-signature ${compact ? "compact" : ""}`}><small>PROTOCOLO DE PERFORMANCE AGRÍCOLA</small><img src={regenesis} alt="Regenesis" /><i /></div>;
-}
-function Screen({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <main className={`regenesis-screen ${className}`}>{children}</main>;
-}
+function GameHeader({ stage }: { stage: string }) { return <header className="regenesis-header"><span>AMBIOS / {stage}</span><button type="button" aria-label="Som desligado">SOM OFF&nbsp;⌁</button></header>; }
+function BrandSignature({ compact = false }: { compact?: boolean }) { return <div className={`brand-signature ${compact ? "compact" : ""}`}><small>PROTOCOLO DE PERFORMANCE AGRÍCOLA</small><img src={regenesis} alt="Regenesis" /><i /></div>; }
+function Screen({ children, className = "" }: { children: ReactNode; className?: string }) { return <main className={`regenesis-screen ${className}`}>{children}</main>; }
 
 export function RouletteGame() {
   const game = useRouletteGame();
@@ -29,6 +22,8 @@ export function RouletteGame() {
 }
 
 function Lead({ onStart }: { onStart: (data: Participant) => void }) {
+  const [showPolicy, setShowPolicy] = useState(false);
   const submit = (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); const data = new FormData(event.currentTarget); onStart({ name: String(data.get("name")), phone: String(data.get("phone")), email: "", consent: Boolean(data.get("consent")) }); };
-  return <Screen className="lead-screen"><GameHeader stage="PARTICIPAÇÃO" /><div className="lead-copy"><p className="step-label">IDENTIFICAÇÃO</p><BrandSignature /><h1>PRONTO PARA<br />O DESAFIO?</h1></div><form onSubmit={submit}><label>NOME<input name="name" required placeholder="Seu nome" /></label><label>WHATSAPP<input name="phone" required inputMode="tel" placeholder="(00) 00000-0000" /></label><label className="consent"><input name="consent" required type="checkbox" /><span>Concordo em receber comunicações da Ambios pelo WhatsApp.</span></label><small className="privacy">Política de Privacidade — link técnico em preparação.</small><button className="regenesis-cta"><span>COMEÇAR</span><i>↗</i></button></form>{footer}</Screen>;
+  return <Screen className="lead-screen"><GameHeader stage="PARTICIPAÇÃO" /><div className="lead-copy"><p className="step-label">IDENTIFICAÇÃO</p><BrandSignature /><h1>PRONTO PARA<br />O DESAFIO?</h1></div><form onSubmit={submit}><label>NOME<input name="name" required placeholder="Seu nome" /></label><label>WHATSAPP<input name="phone" required inputMode="tel" placeholder="(00) 00000-0000" /></label><label className="consent"><input name="consent" required type="checkbox" /><span>Li e concordo com a Política de Privacidade da Ambios e autorizo o uso dos meus dados para contato, envio de informações, conteúdos e novidades da marca.</span></label><button type="button" className="privacy" onClick={() => setShowPolicy(true)}>Ler Política de Privacidade</button><button className="regenesis-cta"><span>COMEÇAR</span><i>↗</i></button></form>{footer}{showPolicy && <PrivacyPolicy onClose={() => setShowPolicy(false)} />}</Screen>;
 }
+function PrivacyPolicy({ onClose }: { onClose: () => void }) { return <section className="privacy-modal" role="dialog" aria-modal="true" aria-label="Política de Privacidade"><div><button onClick={onClose} aria-label="Fechar política">×</button><p className="step-label">POLÍTICA DE PRIVACIDADE</p><h2>Ambios no CBA</h2><p>A Ambios respeita a sua privacidade e trata seus dados pessoais conforme a LGPD (Lei nº 13.709/2018).</p><h3>1. Dados coletados</h3><p>Para o cadastro durante o Congresso Brasileiro do Algodão, são solicitados apenas nome e número de WhatsApp.</p><h3>2. Como os dados são utilizados</h3><p>Os dados podem ser usados para contato pelo WhatsApp, envio de informações sobre produtos, soluções, conteúdos, novidades e eventos da Ambios, dando continuidade ao relacionamento iniciado no CBA.</p><h3>3. Compartilhamento</h3><p>A Ambios não comercializa seus dados pessoais. Fornecedores e parceiros de ferramentas de comunicação poderão acessá-los quando necessário, observando segurança e confidencialidade.</p><h3>4. Armazenamento e segurança</h3><p>Os dados são protegidos por medidas adequadas e armazenados somente pelo período necessário às finalidades informadas ou obrigações legais.</p><h3>5. Seus direitos</h3><p>Você pode solicitar informações, correção, atualização, exclusão quando aplicável, interrupção de comunicações ou revogação de consentimento.</p><h3>6. Contato</h3><p>O canal oficial para assuntos de privacidade será informado pela Ambios.</p><h3>7. Consentimento</h3><p>Ao aceitar esta política, você declara estar ciente e de acordo com o uso de nome e WhatsApp para as finalidades apresentadas.</p></div></section>; }
